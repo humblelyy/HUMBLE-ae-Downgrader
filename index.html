@@ -1,129 +1,652 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#09090b">
-  <meta name="description" content="HUMBLE Downgrader — AEP and AEX workflow.">
-  <title>HUMBLE Downgrader</title>
-  <link rel="stylesheet" href="./style.css">
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <meta
+        name="theme-color"
+        content="#09090b"
+    >
+
+    <meta
+        name="description"
+        content="HUMBLE Downgrader — AEP and AEX workflow."
+    >
+
+    <title>HUMBLE Downgrader</title>
+
+    <link
+        rel="stylesheet"
+        href="./style.css"
+    >
 </head>
+
+
 <body>
-  <div class="topbar">⚡ HUMBLE DOWNGRADER · AEP & AEX WORKFLOW · WINDOWS · macOS · ⚡</div>
 
-  <header class="nav wrap">
-    <a class="brand" href="#">
-      <img src="./assets/logo.png" alt="HUMBLE logo">
-      <span>HUMBLE</span>
-    </a>
-    <nav>
-      <a href="#converter">CONVERTER</a>
-      <a href="#how">HOW IT WORKS</a>
-      <a href="#compatibility">COMPATIBILITY</a>
-    </nav>
-    <a class="nav-cta" href="#converter">START ↗</a>
-  </header>
+    <!-- =========================================
+         TOP BAR
+    ========================================== -->
 
-  <main>
-    <section class="hero wrap">
-      <div class="hero-copy">
-        <p class="eyebrow">HUMBLE TOOL / V1.0</p>
-        <h1>HUMBLE<br><span>DOWNGRADER</span></h1>
-        <p class="lead">A simple workflow for preparing After Effects projects and plugins for an older version. Drop a file, choose a target, and convert.</p>
-        <a class="button outline" href="#converter">OPEN CONVERTER <b>↘</b></a>
-      </div>
-      <div class="hero-banner">
-        <img src="./assets/banner.png" alt="HUMBLE Downgrader">
-        <div class="badge">MADE<br>FOR<br>EDITORS</div>
-      </div>
-    </section>
+    <div class="topbar">
+        ⚡ HUMBLE DOWNGRADER · AEP & AEX WORKFLOW · WINDOWS · macOS · ⚡
+    </div>
 
-    <div class="marquee"><div>⚡ DROP · DETECT · CHOOSE · CONVERT · DOWNLOAD · ⚡ DROP · DETECT · CHOOSE · CONVERT · DOWNLOAD · </div></div>
 
-    <section class="converter wrap" id="converter">
-      <div class="section-title">
-        <div>
-          <p class="eyebrow">01 — CONVERTER</p>
-          <h2>DROP IT. WE'LL HANDLE THE REST.</h2>
+    <!-- =========================================
+         NAVIGATION
+    ========================================== -->
+
+    <header class="nav wrap">
+
+        <a
+            class="brand"
+            href="#"
+        >
+
+            <img
+                src="./assets/logo.png"
+                alt="HUMBLE logo"
+            >
+
+            <span>HUMBLE</span>
+
+        </a>
+
+
+        <nav>
+
+            <a href="#converter">
+                CONVERTER
+            </a>
+
+            <a href="#how">
+                HOW IT WORKS
+            </a>
+
+            <a href="#compatibility">
+                COMPATIBILITY
+            </a>
+
+        </nav>
+
+
+        <a
+            class="nav-cta"
+            href="#converter"
+        >
+            START ↗
+        </a>
+
+    </header>
+
+
+
+    <main>
+
+        <!-- =========================================
+             HERO
+        ========================================== -->
+
+        <section class="hero wrap">
+
+            <div class="hero-copy">
+
+                <p class="eyebrow">
+                    HUMBLE TOOL / V1.0
+                </p>
+
+
+                <h1>
+                    HUMBLE
+                    <br>
+                    <span>DOWNGRADER</span>
+                </h1>
+
+
+                <p class="lead">
+                    A simple workflow for preparing After Effects
+                    projects and plugins for an older version.
+                    Drop a file, choose a target, and convert.
+                </p>
+
+
+                <a
+                    class="button outline"
+                    href="#converter"
+                >
+                    OPEN CONVERTER
+
+                    <b>↘</b>
+                </a>
+
+            </div>
+
+
+
+            <!-- HERO BANNER -->
+
+            <div class="hero-banner">
+
+                <img
+                    src="./assets/banner.png"
+                    alt="HUMBLE Downgrader"
+                >
+
+
+                <div class="badge">
+                    MADE
+                    <br>
+                    FOR
+                    <br>
+                    EDITORS
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================================
+             MARQUEE
+        ========================================== -->
+
+        <div class="marquee">
+
+            <div>
+                ⚡ DROP · DETECT · CHOOSE · CONVERT · DOWNLOAD ·
+                ⚡ DROP · DETECT · CHOOSE · CONVERT · DOWNLOAD ·
+            </div>
+
         </div>
-        <span class="tag">AUTO-DETECT AEP / AEX</span>
-      </div>
 
-      <div class="converter-grid">
-        <label class="dropzone" id="dropzone">
-          <input id="file" type="file" accept=".aep,.aex" hidden>
-          <div class="upload-icon">↑</div>
-          <strong>DROP YOUR FILE HERE</strong>
-          <span>or <u>browse files</u></span>
-          <small>.AEP PROJECTS · .AEX PLUGINS</small>
-        </label>
 
-        <div class="settings">
-          <div class="file-card hidden" id="fileCard">
-            <div class="file-badge" id="fileType">AEP</div>
-            <div class="file-meta"><b id="fileName"></b><span id="fileSize"></span></div>
-            <button id="removeFile" aria-label="Remove file">×</button>
-          </div>
 
-          <div class="field-grid">
-            <div>
-              <label>DETECTED TYPE</label>
-              <div class="readout" id="detectedType">Waiting for file</div>
+        <!-- =========================================
+             CONVERTER
+        ========================================== -->
+
+        <section
+            class="converter wrap"
+            id="converter"
+        >
+
+            <div class="section-title">
+
+                <div>
+
+                    <p class="eyebrow">
+                        01 — CONVERTER
+                    </p>
+
+
+                    <h2>
+                        DROP IT. WE'LL HANDLE THE REST.
+                    </h2>
+
+                </div>
+
+
+                <span class="tag">
+                    AUTO-DETECT AEP / AEX
+                </span>
+
             </div>
-            <div>
-              <label>CONVERT TO</label>
-              <select id="targetVersion">
-                <option value="2026">After Effects 2026</option>
-                <option value="2025">After Effects 2025</option>
-                <option value="2024">After Effects 2024</option>
-                <option value="2023">After Effects 2023</option>
-                <option value="2022">After Effects 2022</option>
-                <option value="2021">After Effects 2021</option>
-                <option value="2020">After Effects 2020</option>
-                <option value="2019">After Effects 2019</option>
-                <option value="2018">After Effects 2018</option>
-                <option value="CS6">After Effects CS6</option>
-              </select>
+
+
+
+            <div class="converter-grid">
+
+
+                <!-- =====================================
+                     DROP ZONE
+                ====================================== -->
+
+                <label
+                    class="dropzone"
+                    id="dropzone"
+                    for="file"
+                >
+
+                    <input
+                        id="file"
+                        type="file"
+                        accept=".aep,.aex"
+                        hidden
+                    >
+
+
+                    <div class="upload-icon">
+                        ↑
+                    </div>
+
+
+                    <strong>
+                        DROP YOUR FILE HERE
+                    </strong>
+
+
+                    <span>
+                        or
+                        <u>browse files</u>
+                    </span>
+
+
+                    <small>
+                        .AEP PROJECTS · .AEX PLUGINS
+                    </small>
+
+                </label>
+
+
+
+                <!-- =====================================
+                     SETTINGS
+                ====================================== -->
+
+                <div class="settings">
+
+
+                    <!-- FILE INFORMATION -->
+
+                    <div
+                        class="file-card hidden"
+                        id="fileCard"
+                    >
+
+                        <div
+                            class="file-badge"
+                            id="fileType"
+                        >
+                            AEP
+                        </div>
+
+
+                        <div class="file-meta">
+
+                            <b id="fileName">
+                            </b>
+
+
+                            <span id="fileSize">
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="removeFile"
+                            aria-label="Remove selected file"
+                        >
+                            ×
+                        </button>
+
+                    </div>
+
+
+
+                    <!-- VERSION CONTROLS -->
+
+                    <div class="field-grid">
+
+
+                        <!-- DETECTED TYPE -->
+
+                        <div>
+
+                            <label for="detectedType">
+                                DETECTED TYPE
+                            </label>
+
+
+                            <div
+                                class="readout"
+                                id="detectedType"
+                            >
+                                Waiting for file
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- TARGET VERSION -->
+
+                        <div>
+
+                            <label for="targetVersion">
+                                CONVERT TO
+                            </label>
+
+
+                            <select id="targetVersion">
+
+                                <option value="2026">
+                                    After Effects 2026
+                                </option>
+
+                                <option value="2025">
+                                    After Effects 2025
+                                </option>
+
+                                <option value="2024">
+                                    After Effects 2024
+                                </option>
+
+                                <option value="2023">
+                                    After Effects 2023
+                                </option>
+
+                                <option value="2022">
+                                    After Effects 2022
+                                </option>
+
+                                <option value="2021">
+                                    After Effects 2021
+                                </option>
+
+                                <option value="2020">
+                                    After Effects 2020
+                                </option>
+
+                                <option value="2019">
+                                    After Effects 2019
+                                </option>
+
+                                <option value="2018">
+                                    After Effects 2018
+                                </option>
+
+                                <option value="CS6">
+                                    After Effects CS6
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CONVERT BUTTON -->
+
+                    <button
+                        class="button convert"
+                        id="convert"
+                        type="button"
+                        disabled
+                    >
+
+                        CONVERT
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- STATUS -->
+
+                    <div
+                        class="status hidden"
+                        id="status"
+                        role="status"
+                        aria-live="polite"
+                    >
+                    </div>
+
+
+                </div>
+
             </div>
-          </div>
 
-          <button class="button convert" id="convert" disabled>CONVERT <span>→</span></button>
-          <div class="status hidden" id="status"></div>
-          
-      </div>
-    </section>
+        </section>
 
-    <section class="how wrap" id="how">
-      <div class="section-title">
-        <div><p class="eyebrow">02 — HOW IT WORKS</p><h2>NO COMPLICATED WORKFLOW.</h2></div>
-      </div>
-      <div class="cards">
-        <article><b>01</b><h3>DROP</h3><p>Choose an AEP project or AEX plugin. HUMBLE detects the extension automatically.</p></article>
-        <article><b>02</b><h3>CHOOSE</h3><p>Select the target After Effects version you want to prepare the file for.</p></article>
-        <article><b>03</b><h3>CONVERT</h3><p>A connected conversion worker performs the actual Adobe-compatible operation and returns the output.</p></article>
-      </div>
-    </section>
 
-    <section class="compat wrap" id="compatibility">
-      <div>
-        <p class="eyebrow">03 — COMPATIBILITY</p>
-        <h2>ONE WEBSITE.<br>TWO PLATFORMS.</h2>
-      </div>
-      <div>
-        <p>HUMBLE Downgrader is designed as a static frontend so it can be published directly on GitHub Pages. The same site works in modern browsers on Windows and macOS.</p>
-        <div class="chips"><span>WINDOWS</span><span>macOS</span><span>AEP</span><span>AEX</span><span>AFTER EFFECTS</span></div>
-      </div>
-    </section>
 
-    <section class="cta">
-      <div class="wrap cta-inner">
-        <h2>KEEP<br>CREATING.</h2>
-        <div><p>HUMBLE tools are made to remove friction from the creative workflow.</p><a href="#converter">OPEN DOWNGRADER ↗</a></div>
-      </div>
-    </section>
-  </main>
+        <!-- =========================================
+             HOW IT WORKS
+        ========================================== -->
 
-  <footer class="wrap"><span>© 2026 HUMBLE</span><span>HUMBLE DOWNGRADER</span><span>MADE FOR EDITORS ⚡</span></footer>
-  <script src="./app.js"></script>
+        <section
+            class="how wrap"
+            id="how"
+        >
+
+            <div class="section-title">
+
+                <div>
+
+                    <p class="eyebrow">
+                        02 — HOW IT WORKS
+                    </p>
+
+
+                    <h2>
+                        NO COMPLICATED WORKFLOW.
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="cards">
+
+
+                <article>
+
+                    <b>
+                        01
+                    </b>
+
+
+                    <h3>
+                        DROP
+                    </h3>
+
+
+                    <p>
+                        Choose an AEP project or AEX plugin.
+                        HUMBLE detects the extension automatically.
+                    </p>
+
+                </article>
+
+
+
+                <article>
+
+                    <b>
+                        02
+                    </b>
+
+
+                    <h3>
+                        CHOOSE
+                    </h3>
+
+
+                    <p>
+                        Select the target After Effects version
+                        you want to prepare the file for.
+                    </p>
+
+                </article>
+
+
+
+                <article>
+
+                    <b>
+                        03
+                    </b>
+
+
+                    <h3>
+                        CONVERT
+                    </h3>
+
+
+                    <p>
+                        Run the conversion and receive a separate
+                        output file when the process succeeds.
+                    </p>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================================
+             COMPATIBILITY
+        ========================================== -->
+
+        <section
+            class="compat wrap"
+            id="compatibility"
+        >
+
+            <div>
+
+                <p class="eyebrow">
+                    03 — COMPATIBILITY
+                </p>
+
+
+                <h2>
+                    ONE WEBSITE.
+                    <br>
+                    TWO PLATFORMS.
+                </h2>
+
+            </div>
+
+
+
+            <div>
+
+                <p>
+                    HUMBLE Downgrader is designed for modern
+                    browsers on Windows and macOS, with a clean
+                    workflow for After Effects users.
+                </p>
+
+
+                <div class="chips">
+
+                    <span>
+                        WINDOWS
+                    </span>
+
+                    <span>
+                        macOS
+                    </span>
+
+                    <span>
+                        AEP
+                    </span>
+
+                    <span>
+                        AEX
+                    </span>
+
+                    <span>
+                        AFTER EFFECTS
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================================
+             CTA
+        ========================================== -->
+
+        <section class="cta">
+
+            <div class="wrap cta-inner">
+
+
+                <h2>
+                    KEEP
+                    <br>
+                    CREATING.
+                </h2>
+
+
+                <div>
+
+                    <p>
+                        HUMBLE tools are made to remove
+                        friction from the creative workflow.
+                    </p>
+
+
+                    <a href="#converter">
+                        OPEN DOWNGRADER ↗
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
+
+    <footer class="wrap">
+
+        <span>
+            © 2026 HUMBLE
+        </span>
+
+
+        <span>
+            HUMBLE DOWNGRADER
+        </span>
+
+
+        <span>
+            MADE FOR EDITORS ⚡
+        </span>
+
+    </footer>
+
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
+
+    <script src="./app.js"></script>
+
 </body>
+
 </html>

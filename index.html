@@ -1,22 +1,21 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1"
+        content="width=device-width, initial-scale=1.0"
     >
 
     <meta
         name="theme-color"
-        content="#09090b"
+        content="#050505"
     >
 
     <meta
         name="description"
-        content="HUMBLE Downgrader — AEP and AEX workflow."
+        content="HUMBLE Downgrader — After Effects AEP and AEX compatibility tool."
     >
 
     <title>HUMBLE Downgrader</title>
@@ -27,14 +26,600 @@
     >
 </head>
 
-
 <body>
 
-    <!-- ==================================================
+    <!-- =====================================================
+         WEBSITE
+         ===================================================== -->
+
+    <div class="site">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div class="topbar-inner">
+                <span>HUMBLE STUDIO</span>
+                <span>WINDOWS · macOS</span>
+            </div>
+        </div>
+
+
+        <!-- HEADER -->
+        <header class="header">
+
+            <a
+                href="#top"
+                class="brand"
+                aria-label="HUMBLE Downgrader Home"
+            >
+                <img
+                    src="./assets/logo.png"
+                    alt="HUMBLE"
+                >
+            </a>
+
+            <nav class="desktop-nav">
+                <a href="#converter">DOWNGRADER</a>
+                <a href="#how">HOW IT WORKS</a>
+                <a href="#compatibility">COMPATIBILITY</a>
+            </nav>
+
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Open menu"
+                aria-expanded="false"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+        </header>
+
+
+        <!-- MOBILE MENU -->
+        <nav class="mobile-menu">
+
+            <a href="#converter">
+                DOWNGRADER
+            </a>
+
+            <a href="#how">
+                HOW IT WORKS
+            </a>
+
+            <a href="#compatibility">
+                COMPATIBILITY
+            </a>
+
+        </nav>
+
+
+        <!-- HERO -->
+        <main id="top">
+
+            <section class="hero">
+
+                <div class="hero-content">
+
+                    <div class="eyebrow">
+                        HUMBLE TOOL
+                    </div>
+
+                    <h1>
+                        AFTER EFFECTS
+                        <span>DOWNGRADER.</span>
+                    </h1>
+
+                    <p>
+                        Convert After Effects project and
+                        plugin files for older versions with
+                        a clean and simple workflow.
+                    </p>
+
+                    <a
+                        href="#converter"
+                        class="hero-button"
+                    >
+                        START CONVERTING
+                        <span>↗</span>
+                    </a>
+
+                </div>
+
+                <div class="hero-visual">
+                    <img
+                        src="./assets/banner.png"
+                        alt=""
+                    >
+                </div>
+
+            </section>
+
+
+            <!-- MARQUEE -->
+            <div class="marquee">
+
+                <div class="marquee-track">
+
+                    <span>HUMBLE DOWNGRADER</span>
+                    <span>✦</span>
+                    <span>AEP</span>
+                    <span>✦</span>
+                    <span>AEX</span>
+                    <span>✦</span>
+                    <span>AFTER EFFECTS</span>
+                    <span>✦</span>
+
+                    <span>HUMBLE DOWNGRADER</span>
+                    <span>✦</span>
+                    <span>AEP</span>
+                    <span>✦</span>
+                    <span>AEX</span>
+                    <span>✦</span>
+                    <span>AFTER EFFECTS</span>
+                    <span>✦</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONVERTER -->
+            <section
+                class="converter-section"
+                id="converter"
+            >
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        01
+                    </div>
+
+                    <div>
+                        <div class="small-label">
+                            CONVERSION TOOL
+                        </div>
+
+                        <h2>
+                            DROP YOUR
+                            <em>FILE.</em>
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div class="converter-box">
+
+                    <label
+                        class="dropzone"
+                        id="dropzone"
+                        for="fileInput"
+                    >
+
+                        <input
+                            type="file"
+                            id="fileInput"
+                            accept=".aep,.aex"
+                            hidden
+                        >
+
+                        <div class="drop-icon">
+                            +
+                        </div>
+
+                        <div class="drop-title">
+                            DROP AEP OR AEX FILE
+                        </div>
+
+                        <div class="drop-subtitle">
+                            OR CLICK TO BROWSE
+                        </div>
+
+                        <div class="file-types">
+                            AEP &nbsp; / &nbsp; AEX
+                        </div>
+
+                    </label>
+
+
+                    <!-- FILE CARD -->
+                    <div
+                        class="file-card"
+                        id="fileCard"
+                    >
+
+                        <div class="file-icon">
+                            FILE
+                        </div>
+
+                        <div class="file-information">
+
+                            <strong id="fileName">
+                                File
+                            </strong>
+
+                            <span id="fileSize">
+                                0 KB
+                            </span>
+
+                        </div>
+
+                        <div class="detected">
+
+                            <small>
+                                DETECTED
+                            </small>
+
+                            <strong id="detectedType">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- OPTIONS -->
+                    <div class="converter-options">
+
+                        <div class="version-control">
+
+                            <label for="targetVersion">
+                                TARGET VERSION
+                            </label>
+
+                            <select id="targetVersion">
+
+                                <option value="2025">
+                                    After Effects 2025
+                                </option>
+
+                                <option value="2024">
+                                    After Effects 2024
+                                </option>
+
+                                <option value="2023">
+                                    After Effects 2023
+                                </option>
+
+                                <option value="2022">
+                                    After Effects 2022
+                                </option>
+
+                                <option value="2021">
+                                    After Effects 2021
+                                </option>
+
+                                <option value="2020">
+                                    After Effects 2020
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <button
+                            class="convert-button"
+                            id="convertButton"
+                            type="button"
+                            disabled
+                        >
+                            CONVERT
+                            <span>↗</span>
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="converter-status"
+                        id="converterStatus"
+                    >
+                        Select an AEP or AEX file to continue.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- HOW IT WORKS -->
+            <section
+                class="info-section"
+                id="how"
+            >
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        02
+                    </div>
+
+                    <div>
+                        <div class="small-label">
+                            SIMPLE WORKFLOW
+                        </div>
+
+                        <h2>
+                            HOW IT
+                            <em>WORKS.</em>
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div class="steps">
+
+                    <article class="step">
+
+                        <span>01</span>
+
+                        <h3>
+                            UPLOAD
+                        </h3>
+
+                        <p>
+                            Select your AEP or AEX file
+                            from your device.
+                        </p>
+
+                    </article>
+
+
+                    <article class="step">
+
+                        <span>02</span>
+
+                        <h3>
+                            SELECT VERSION
+                        </h3>
+
+                        <p>
+                            Choose the After Effects
+                            version you need.
+                        </p>
+
+                    </article>
+
+
+                    <article class="step">
+
+                        <span>03</span>
+
+                        <h3>
+                            CONVERT
+                        </h3>
+
+                        <p>
+                            Convert your compatible file
+                            through the conversion service.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- COMPATIBILITY -->
+            <section
+                class="compatibility-section"
+                id="compatibility"
+            >
+
+                <div class="section-heading">
+
+                    <div class="section-number">
+                        03
+                    </div>
+
+                    <div>
+                        <div class="small-label">
+                            FILE SUPPORT
+                        </div>
+
+                        <h2>
+                            BUILT FOR
+                            <em>AE.</em>
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div class="compatibility-grid">
+
+                    <div class="compat-card">
+
+                        <div class="compat-top">
+                            <span>AEP</span>
+                            <b>01</b>
+                        </div>
+
+                        <h3>
+                            AFTER EFFECTS
+                            PROJECT
+                        </h3>
+
+                        <p>
+                            Adobe After Effects project
+                            files.
+                        </p>
+
+                    </div>
+
+
+                    <div class="compat-card">
+
+                        <div class="compat-top">
+                            <span>AEX</span>
+                            <b>02</b>
+                        </div>
+
+                        <h3>
+                            AFTER EFFECTS
+                            PLUGIN
+                        </h3>
+
+                        <p>
+                            After Effects plugin files
+                            with version-specific compatibility.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CTA -->
+            <section class="cta">
+
+                <div class="cta-label">
+                    HUMBLE STUDIO
+                </div>
+
+                <h2>
+                    KEEP CREATING.
+                </h2>
+
+                <p>
+                    Simple tools for creators.
+                </p>
+
+            </section>
+
+        </main>
+
+
+        <!-- FOOTER -->
+        <footer class="footer">
+
+            <div>
+                © <span data-year></span> HUMBLE
+            </div>
+
+            <div>
+                DOWNGRADER
+            </div>
+
+        </footer>
+
+    </div>
+
+
+    <!-- =====================================================
          MAINTENANCE OVERLAY
-    =================================================== -->
+         ===================================================== -->
 
     <div
+        class="maintenance-overlay"
+        id="maintenanceOverlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="HUMBLE Downgrader maintenance"
+    >
+
+        <div class="maintenance-backdrop"></div>
+
+        <div class="maintenance-content">
+
+            <!-- LOGO -->
+            <div class="maintenance-logo">
+
+                <img
+                    src="./assets/logo.png"
+                    alt="HUMBLE"
+                >
+
+            </div>
+
+
+            <!-- DOT LOADER -->
+            <div
+                class="maintenance-loader"
+                role="status"
+                aria-label="Loading"
+            >
+
+                <div
+                    class="dotm-loader"
+                    id="dotmLoader"
+                    aria-hidden="true"
+                >
+
+                    <!--
+                        IMPORTANT:
+                        These are the actual 10 dots.
+                        No old ring loader is used.
+                    -->
+
+                    <span class="dotm-dot dot-1"></span>
+                    <span class="dotm-dot dot-2"></span>
+                    <span class="dotm-dot dot-3"></span>
+                    <span class="dotm-dot dot-4"></span>
+                    <span class="dotm-dot dot-5"></span>
+                    <span class="dotm-dot dot-6"></span>
+                    <span class="dotm-dot dot-7"></span>
+                    <span class="dotm-dot dot-8"></span>
+                    <span class="dotm-dot dot-9"></span>
+                    <span class="dotm-dot dot-10"></span>
+
+                </div>
+
+            </div>
+
+
+            <div class="maintenance-label">
+                HUMBLE DOWNGRADER
+            </div>
+
+
+            <h1>
+                WE'RE MAKING
+                <br>
+                <em>SOME IMPROVEMENTS.</em>
+            </h1>
+
+
+            <p class="maintenance-description">
+                HUMBLE Downgrader is temporarily unavailable
+                while we're fixing bugs, improving stability,
+                and optimizing the conversion experience.
+            </p>
+
+
+            <div class="maintenance-status">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    WEBSITE MAINTENANCE IN PROGRESS
+                </span>
+
+            </div>
+
+
+            <div class="maintenance-bottom">
+                WE'LL BE BACK SOON.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="./app.js"></script>
+
+</body>
+</html>    <div
         class="maintenance-overlay"
         id="maintenanceOverlay"
         role="dialog"

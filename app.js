@@ -1,40 +1,410 @@
-/* ==================================================
+/* =========================================================
    HUMBLE DOWNGRADER
-   Maintenance Mode + Converter UI
-================================================== */
+   Main JavaScript
+   ========================================================= */
 
+document.addEventListener("DOMContentLoaded", () => {
+    "use strict";
 
-/*
-    ==================================================
-    MAINTENANCE MODE
-    ==================================================
+    /* =====================================================
+       MAINTENANCE MODE
+       ===================================================== */
 
-    true  = maintenance screen ON
-    false = website available normally
+    const MAINTENANCE_MODE = true;
 
-    When the website is ready, simply change:
+    const html = document.documentElement;
+    const body = document.body;
+    const maintenanceOverlay = document.getElementById("maintenanceOverlay");
+    const dotmLoader = document.getElementById("dotmLoader");
 
-        true
+    /* =====================================================
+       DOTM CIRCULAR 10 STYLE LOADER
+       ===================================================== */
 
-    to:
+    function buildDotMatrixLoader() {
+        if (!dotmLoader) return;
 
-        false
-*/
+        dotmLoader.innerHTML = "";
 
-const MAINTENANCE_MODE = true;
+        const dotCount = 10;
+        const rotationStep = 360 / dotCount;
+        const animationDuration = 1.4;
 
+        for (let i = 0; i < dotCount; i++) {
+            const dot = document.createElement("span");
 
-/* ==================================================
-   MAINTENANCE LOCK
-================================================== */
+            dot.className = "dotm-dot";
+            dot.setAttribute("aria-hidden", "true");
 
-const maintenanceOverlay =
-    document.querySelector("#maintenanceOverlay");
+            const angle = i * rotationStep;
+            const delay = -(animationDuration / dotCount) * i;
 
+            dot.style.setProperty("--angle", `${angle}deg`);
+            dot.style.setProperty("--delay", `${delay}s`);
+            dot.style.setProperty("--opacity", "1");
 
-function enableMaintenanceMode() {
+            dotmLoader.appendChild(dot);
+        }
+    }
 
-    if (!maintenanceOverlay) {
+    /* =====================================================
+       LOCK WEBSITE DURING MAINTENANCE
+       ===================================================== */
+
+    function enableMaintenanceMode() {
+        if (!maintenanceOverlay) return;
+
+        maintenanceOverlay.hidden = false;
+        maintenanceOverlay.setAttribute("aria-hidden", "false");
+
+        html.classList.add("maintenance-active");
+        body.classList.add("maintenance-active");
+
+        html.style.overflow = "hidden";
+        body.style.overflow = "hidden";
+
+        /*
+         * Prevent interaction with the website underneath.
+         */
+        const blockInteraction = (event) => {
+            if (!maintenanceOverlay.contains(event.target)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        };
+
+        const blockedEvents = [
+            "click",
+            "dblclick",
+            "mousedown",
+            "mouseup",
+            "pointerdown",
+            "pointerup",
+            "pointermove",
+            "touchstart",
+            "touchmove",
+            "touchend",
+            "dragstart",
+            "dragover",
+            "drop",
+            "contextmenu"
+        ];
+
+        blockedEvents.forEach((eventName) => {
+            document.addEventListener(
+                eventName,
+                blockInteraction,
+                true
+            );
+        });
+
+        /*
+         * Prevent scrolling.
+         */
+        document.addEventListener(
+            "wheel",
+            (event) => {
+                event.preventDefault();
+            },
+            { passive: false, capture: true }
+        );
+
+        document.addEventListener(
+            "touchmove",
+            (event) => {
+                event.preventDefault();
+            },
+            { passive: false, capture: true }
+        );
+
+        /*
+         * Prevent keyboard interaction with the website.
+         */
+        document.addEventListener(
+            "keydown",
+            (event) => {
+                /*
+                 * Keep the maintenance screen completely locked.
+                 */
+                event.preventDefault();
+                event.stopPropagation();
+            },
+            true
+        );
+    }
+
+    /* =====================================================
+       INITIALIZE MAINTENANCE SCREEN
+       ===================================================== */
+
+    buildDotMatrixLoader();
+
+    if (MAINTENANCE_MODE) {
+        enableMaintenanceMode();
+    } else if (maintenanceOverlay) {
+        maintenanceOverlay.hidden = true;
+        maintenanceOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    /* =====================================================
+       MOBILE MENU
+       ===================================================== */
+
+    const menuToggle = document.querySelector(".menu-toggle");
+    const mobileMenu = document.querySelector(".mobile-menu");
+
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener("click", () => {
+            const isOpen = mobileMenu.classList.toggle("active");
+
+            menuToggle.classList.toggle("active", isOpen);
+            menuToggle.setAttribute("aria-expanded", String(isOpen));
+        });
+
+        mobileMenu.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", () => {
+                mobileMenu.classList.remove("active");
+                menuToggle.classList.remove("active");
+                menuToggle.setAttribute("aria-expanded", "false");
+            });
+        });
+    }
+
+    /* =====================================================
+       FILE INPUT / CONVERTER
+       ===================================================== */
+
+    const fileInput = document.getElementById("fileInput");
+    const dropzone = document.getElementById("dropzone");
+    const fileCard = document.getElementById("fileCard");
+    const fileName = document.getElementById("fileName");
+    const fileSize = document.getElementById("fileSize");
+    const detectedType = document.getElementById("detectedType");
+    const targetVersion = document.getElementById("targetVersion");
+    const convertButton = document.getElementById("convertButton");
+    const converterStatus = document.getElementById("converterStatus");
+
+    let selectedFile = null;
+    let selectedType = null;
+
+    /* =====================================================
+       FILE TYPE DETECTION
+       ===================================================== */
+
+    function detectFileType(file) {
+        if (!file || !file.name) {
+            return null;
+        }
+
+        const extension = file.name
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+        if (extension === "aep") {
+            return "AEP";
+        }
+
+        if (extension === "aex") {
+            return "AEX";
+        }
+
+        return null;
+    }
+
+    /* =====================================================
+       FILE SIZE FORMATTER
+       ===================================================== */
+
+    function formatFileSize(bytes) {
+        if (!Number.isFinite(bytes) || bytes <= 0) {
+            return "0 KB";
+        }
+
+        const units = ["B", "KB", "MB", "GB"];
+
+        let size = bytes;
+        let unitIndex = 0;
+
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex++;
+        }
+
+        if (unitIndex === 0) {
+            return `${Math.round(size)} ${units[unitIndex]}`;
+        }
+
+        return `${size.toFixed(2)} ${units[unitIndex]}`;
+    }
+
+    /* =====================================================
+       DISPLAY SELECTED FILE
+       ===================================================== */
+
+    function displayFile(file) {
+        if (!file) return;
+
+        const type = detectFileType(file);
+
+        if (!type) {
+            selectedFile = null;
+            selectedType = null;
+
+            if (fileCard) {
+                fileCard.classList.remove("visible");
+            }
+
+            if (converterStatus) {
+                converterStatus.textContent =
+                    "Only .AEP and .AEX files are supported.";
+            }
+
+            if (convertButton) {
+                convertButton.disabled = true;
+            }
+
+            return;
+        }
+
+        selectedFile = file;
+        selectedType = type;
+
+        if (fileName) {
+            fileName.textContent = file.name;
+        }
+
+        if (fileSize) {
+            fileSize.textContent = formatFileSize(file.size);
+        }
+
+        if (detectedType) {
+            detectedType.textContent = type;
+        }
+
+        if (fileCard) {
+            fileCard.classList.add("visible");
+        }
+
+        if (convertButton) {
+            convertButton.disabled = false;
+        }
+
+        if (converterStatus) {
+            converterStatus.textContent =
+                `${type} file detected successfully.`;
+        }
+    }
+
+    /* =====================================================
+       FILE INPUT
+       ===================================================== */
+
+    if (fileInput) {
+        fileInput.addEventListener("change", (event) => {
+            const file = event.target.files?.[0];
+
+            if (file) {
+                displayFile(file);
+            }
+        });
+    }
+
+    /* =====================================================
+       DRAG & DROP
+       ===================================================== */
+
+    if (dropzone) {
+        ["dragenter", "dragover"].forEach((eventName) => {
+            dropzone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                dropzone.classList.add("dragging");
+            });
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+            dropzone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                dropzone.classList.remove("dragging");
+            });
+        });
+
+        dropzone.addEventListener("drop", (event) => {
+            const file = event.dataTransfer?.files?.[0];
+
+            if (file) {
+                displayFile(file);
+            }
+        });
+    }
+
+    /* =====================================================
+       CONVERT BUTTON
+       ===================================================== */
+
+    if (convertButton) {
+        convertButton.addEventListener("click", () => {
+            if (!selectedFile || !selectedType) {
+                return;
+            }
+
+            const version =
+                targetVersion?.value || "Previous Version";
+
+            /*
+             * The actual AEP/AEX conversion service is not
+             * connected to this static GitHub Pages frontend.
+             *
+             * Do not pretend that a conversion happened.
+             */
+            if (converterStatus) {
+                converterStatus.textContent =
+                    `${selectedType} selected · target After Effects ${version}`;
+            }
+        });
+    }
+
+    /* =====================================================
+       SMOOTH INTERNAL LINKS
+       ===================================================== */
+
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+        link.addEventListener("click", (event) => {
+            const targetId = link.getAttribute("href");
+
+            if (!targetId || targetId === "#") {
+                return;
+            }
+
+            const target = document.querySelector(targetId);
+
+            if (!target) {
+                return;
+            }
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        });
+    });
+
+    /* =====================================================
+       YEAR
+       ===================================================== */
+
+    const yearElements = document.querySelectorAll("[data-year]");
+
+    yearElements.forEach((element) => {
+        element.textContent = new Date().getFullYear();
+    });
+});    if (!maintenanceOverlay) {
         return;
     }
 

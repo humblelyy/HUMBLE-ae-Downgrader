@@ -4,37 +4,737 @@
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+
     "use strict";
+
+
+    /* =====================================================
+       CONFIGURATION
+       ===================================================== */
+
+    const MAINTENANCE_MODE = true;
+
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const html =
+        document.documentElement;
+
+    const body =
+        document.body;
+
+    const maintenanceOverlay =
+        document.getElementById(
+            "maintenanceOverlay"
+        );
+
 
     /* =====================================================
        MAINTENANCE MODE
        ===================================================== */
 
-    const MAINTENANCE_MODE = true;
+    function enableMaintenanceMode() {
 
-    const html = document.documentElement;
-    const body = document.body;
+        if (!maintenanceOverlay) {
+            return;
+        }
 
-    const maintenanceOverlay =
-        document.getElementById("maintenanceOverlay");
+        maintenanceOverlay.hidden = false;
 
-    const dotmLoader =
-        document.getElementById("dotmLoader");
+        maintenanceOverlay.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        html.classList.add(
+            "maintenance-active"
+        );
+
+        body.classList.add(
+            "maintenance-active"
+        );
+
+        html.style.overflow = "hidden";
+        body.style.overflow = "hidden";
+
+
+        /* -----------------------------------------------
+           Block all interaction underneath
+           ----------------------------------------------- */
+
+        const blockUnderlyingInteraction =
+            (event) => {
+
+                if (
+                    !maintenanceOverlay.contains(
+                        event.target
+                    )
+                ) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            };
+
+
+        const blockedEvents = [
+
+            "click",
+            "dblclick",
+
+            "mousedown",
+            "mouseup",
+
+            "pointerdown",
+            "pointerup",
+            "pointermove",
+
+            "touchstart",
+            "touchmove",
+            "touchend",
+
+            "dragstart",
+            "dragover",
+            "drop",
+
+            "contextmenu"
+
+        ];
+
+
+        blockedEvents.forEach(
+            (eventName) => {
+
+                document.addEventListener(
+                    eventName,
+                    blockUnderlyingInteraction,
+                    true
+                );
+
+            }
+        );
+
+
+        /* -----------------------------------------------
+           Prevent scrolling
+           ----------------------------------------------- */
+
+        document.addEventListener(
+            "wheel",
+            (event) => {
+
+                event.preventDefault();
+
+            },
+            {
+                passive: false,
+                capture: true
+            }
+        );
+
+
+        document.addEventListener(
+            "touchmove",
+            (event) => {
+
+                event.preventDefault();
+
+            },
+            {
+                passive: false,
+                capture: true
+            }
+        );
+
+
+        /* -----------------------------------------------
+           Lock keyboard interaction
+           ----------------------------------------------- */
+
+        document.addEventListener(
+            "keydown",
+            (event) => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+            },
+            true
+        );
+
+    }
+
 
     /* =====================================================
-       DOTM CIRCULAR 10 LOADER
+       MAINTENANCE INITIALIZATION
        ===================================================== */
 
-    function createDotmLoader() {
-        if (!dotmLoader) return;
+    if (MAINTENANCE_MODE) {
 
-        dotmLoader.innerHTML = "";
+        enableMaintenanceMode();
 
-        const DOT_COUNT = 10;
-        const SIZE = 52;
-        const RADIUS = 22;
+    } else if (maintenanceOverlay) {
 
-        dotmLoader.style.setProperty(
+        maintenanceOverlay.hidden = true;
+
+        maintenanceOverlay.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+    }
+
+
+    /* =====================================================
+       MOBILE MENU
+       ===================================================== */
+
+    const menuToggle =
+        document.querySelector(
+            ".menu-toggle"
+        );
+
+    const mobileMenu =
+        document.querySelector(
+            ".mobile-menu"
+        );
+
+
+    if (
+        menuToggle &&
+        mobileMenu
+    ) {
+
+        menuToggle.addEventListener(
+            "click",
+            () => {
+
+                const isOpen =
+                    mobileMenu.classList.toggle(
+                        "active"
+                    );
+
+
+                menuToggle.classList.toggle(
+                    "active",
+                    isOpen
+                );
+
+
+                menuToggle.setAttribute(
+                    "aria-expanded",
+                    String(isOpen)
+                );
+
+            }
+        );
+
+
+        mobileMenu
+            .querySelectorAll("a")
+            .forEach((link) => {
+
+                link.addEventListener(
+                    "click",
+                    () => {
+
+                        mobileMenu.classList.remove(
+                            "active"
+                        );
+
+                        menuToggle.classList.remove(
+                            "active"
+                        );
+
+                        menuToggle.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    /* =====================================================
+       FILE ELEMENTS
+       ===================================================== */
+
+    const fileInput =
+        document.getElementById(
+            "fileInput"
+        );
+
+    const dropzone =
+        document.getElementById(
+            "dropzone"
+        );
+
+    const fileCard =
+        document.getElementById(
+            "fileCard"
+        );
+
+    const fileName =
+        document.getElementById(
+            "fileName"
+        );
+
+    const fileSize =
+        document.getElementById(
+            "fileSize"
+        );
+
+    const detectedType =
+        document.getElementById(
+            "detectedType"
+        );
+
+    const targetVersion =
+        document.getElementById(
+            "targetVersion"
+        );
+
+    const convertButton =
+        document.getElementById(
+            "convertButton"
+        );
+
+    const converterStatus =
+        document.getElementById(
+            "converterStatus"
+        );
+
+
+    let selectedFile = null;
+    let selectedType = null;
+
+
+    /* =====================================================
+       FILE TYPE
+       ===================================================== */
+
+    function detectFileType(file) {
+
+        if (
+            !file ||
+            !file.name
+        ) {
+            return null;
+        }
+
+
+        const extension =
+            file.name
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+
+        if (extension === "aep") {
+            return "AEP";
+        }
+
+
+        if (extension === "aex") {
+            return "AEX";
+        }
+
+
+        return null;
+
+    }
+
+
+    /* =====================================================
+       FILE SIZE
+       ===================================================== */
+
+    function formatFileSize(bytes) {
+
+        if (
+            !Number.isFinite(bytes) ||
+            bytes <= 0
+        ) {
+            return "0 KB";
+        }
+
+
+        if (bytes < 1024) {
+
+            return `${bytes} B`;
+
+        }
+
+
+        if (
+            bytes <
+            1024 * 1024
+        ) {
+
+            return `${(
+                bytes / 1024
+            ).toFixed(1)} KB`;
+
+        }
+
+
+        if (
+            bytes <
+            1024 * 1024 * 1024
+        ) {
+
+            return `${(
+                bytes /
+                (1024 * 1024)
+            ).toFixed(2)} MB`;
+
+        }
+
+
+        return `${(
+            bytes /
+            (1024 * 1024 * 1024)
+        ).toFixed(2)} GB`;
+
+    }
+
+
+    /* =====================================================
+       DISPLAY FILE
+       ===================================================== */
+
+    function displayFile(file) {
+
+        if (!file) {
+            return;
+        }
+
+
+        const type =
+            detectFileType(file);
+
+
+        if (!type) {
+
+            selectedFile = null;
+            selectedType = null;
+
+
+            if (fileCard) {
+
+                fileCard.classList.remove(
+                    "visible"
+                );
+
+            }
+
+
+            if (convertButton) {
+
+                convertButton.disabled =
+                    true;
+
+            }
+
+
+            if (converterStatus) {
+
+                converterStatus.textContent =
+                    "Only .AEP and .AEX files are supported.";
+
+            }
+
+
+            return;
+
+        }
+
+
+        selectedFile = file;
+        selectedType = type;
+
+
+        if (fileName) {
+
+            fileName.textContent =
+                file.name;
+
+        }
+
+
+        if (fileSize) {
+
+            fileSize.textContent =
+                formatFileSize(
+                    file.size
+                );
+
+        }
+
+
+        if (detectedType) {
+
+            detectedType.textContent =
+                type;
+
+        }
+
+
+        if (fileCard) {
+
+            fileCard.classList.add(
+                "visible"
+            );
+
+        }
+
+
+        if (convertButton) {
+
+            convertButton.disabled =
+                false;
+
+        }
+
+
+        if (converterStatus) {
+
+            converterStatus.textContent =
+                `${type} file detected successfully.`;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       FILE INPUT
+       ===================================================== */
+
+    if (fileInput) {
+
+        fileInput.addEventListener(
+            "change",
+            (event) => {
+
+                const file =
+                    event.target
+                        ?.files?.[0];
+
+
+                if (file) {
+
+                    displayFile(file);
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       DRAG & DROP
+       ===================================================== */
+
+    if (dropzone) {
+
+
+        [
+            "dragenter",
+            "dragover"
+        ].forEach(
+            (eventName) => {
+
+                dropzone.addEventListener(
+                    eventName,
+                    (event) => {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        dropzone.classList.add(
+                            "dragging"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        [
+            "dragleave",
+            "drop"
+        ].forEach(
+            (eventName) => {
+
+                dropzone.addEventListener(
+                    eventName,
+                    (event) => {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        dropzone.classList.remove(
+                            "dragging"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        dropzone.addEventListener(
+            "drop",
+            (event) => {
+
+                const file =
+                    event.dataTransfer
+                        ?.files?.[0];
+
+
+                if (file) {
+
+                    displayFile(file);
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       CONVERT BUTTON
+       ===================================================== */
+
+    if (convertButton) {
+
+        convertButton.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    !selectedFile ||
+                    !selectedType
+                ) {
+                    return;
+                }
+
+
+                const version =
+                    targetVersion?.value ||
+                    "Previous Version";
+
+
+                /*
+                 * IMPORTANT:
+                 * This GitHub Pages frontend does NOT
+                 * perform real AEP/AEX conversion.
+                 *
+                 * A real conversion backend must be
+                 * connected before claiming a file
+                 * has been converted.
+                 */
+
+                if (converterStatus) {
+
+                    converterStatus.textContent =
+                        `${selectedType} selected · target After Effects ${version}`;
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SMOOTH INTERNAL LINKS
+       ===================================================== */
+
+    document
+        .querySelectorAll(
+            'a[href^="#"]'
+        )
+        .forEach(
+            (link) => {
+
+                link.addEventListener(
+                    "click",
+                    (event) => {
+
+                        const targetId =
+                            link.getAttribute(
+                                "href"
+                            );
+
+
+                        if (
+                            !targetId ||
+                            targetId === "#"
+                        ) {
+                            return;
+                        }
+
+
+                        const target =
+                            document.querySelector(
+                                targetId
+                            );
+
+
+                        if (!target) {
+                            return;
+                        }
+
+
+                        event.preventDefault();
+
+
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start"
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       YEAR
+       ===================================================== */
+
+    document
+        .querySelectorAll(
+            "[data-year]"
+        )
+        .forEach(
+            (element) => {
+
+                element.textContent =
+                    new Date()
+                        .getFullYear();
+
+            }
+        );
+
+});        dotmLoader.style.setProperty(
             "--loader-size",
             `${SIZE}px`
         );

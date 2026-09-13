@@ -1,6 +1,6 @@
 /* =========================================================
    HUMBLE DOWNGRADER
-   Main JavaScript
+   app.js
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,27 +14,623 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const html = document.documentElement;
     const body = document.body;
-    const maintenanceOverlay = document.getElementById("maintenanceOverlay");
-    const dotmLoader = document.getElementById("dotmLoader");
+
+    const maintenanceOverlay =
+        document.getElementById("maintenanceOverlay");
+
+    const dotmLoader =
+        document.getElementById("dotmLoader");
 
     /* =====================================================
-       DOTM CIRCULAR 10 STYLE LOADER
+       DOTM CIRCULAR 10 LOADER
        ===================================================== */
 
-    function buildDotMatrixLoader() {
+    function createDotmLoader() {
         if (!dotmLoader) return;
 
         dotmLoader.innerHTML = "";
 
-        const dotCount = 10;
-        const rotationStep = 360 / dotCount;
-        const animationDuration = 1.4;
+        const DOT_COUNT = 10;
+        const SIZE = 52;
+        const RADIUS = 22;
 
-        for (let i = 0; i < dotCount; i++) {
+        dotmLoader.style.setProperty(
+            "--loader-size",
+            `${SIZE}px`
+        );
+
+        for (let i = 0; i < DOT_COUNT; i++) {
             const dot = document.createElement("span");
 
             dot.className = "dotm-dot";
-            dot.setAttribute("aria-hidden", "true");
+
+            const angle =
+                (360 / DOT_COUNT) * i;
+
+            const delay =
+                -(i * 0.14);
+
+            /*
+             * Different brightness for each dot.
+             * This creates the circular loading trail.
+             */
+            const opacity =
+                0.12 +
+                (i / DOT_COUNT) * 0.88;
+
+            dot.style.position = "absolute";
+            dot.style.width = "4px";
+            dot.style.height = "4px";
+            dot.style.borderRadius = "50%";
+            dot.style.background = "#ff6fa6";
+
+            dot.style.left = "50%";
+            dot.style.top = "50%";
+
+            dot.style.marginLeft = "-2px";
+            dot.style.marginTop = "-2px";
+
+            dot.style.setProperty(
+                "--angle",
+                `${angle}deg`
+            );
+
+            dot.style.setProperty(
+                "--delay",
+                `${delay}s`
+            );
+
+            dot.style.setProperty(
+                "--base-opacity",
+                opacity.toFixed(2)
+            );
+
+            /*
+             * Place the dot around the circle.
+             */
+            dot.style.transform =
+                `rotate(${angle}deg) translateY(-${RADIUS}px)`;
+
+            /*
+             * Dot glow.
+             */
+            dot.style.boxShadow =
+                "0 0 5px rgba(255,111,166,.55)," +
+                "0 0 12px rgba(255,111,166,.25)";
+
+            /*
+             * Each dot pulses independently.
+             */
+            dot.style.animation =
+                `humbleDotPulse 1.4s ease-in-out infinite`;
+
+            dot.style.animationDelay =
+                `${delay}s`;
+
+            dotmLoader.appendChild(dot);
+        }
+
+        /*
+         * Inject the animation directly from JS.
+         * This guarantees the animation exists even if
+         * the CSS loader animation was missing.
+         */
+        if (!document.getElementById("humbleDotAnimation")) {
+            const style = document.createElement("style");
+
+            style.id = "humbleDotAnimation";
+
+            style.textContent = `
+                @keyframes humbleDotPulse {
+
+                    0% {
+                        opacity: .12;
+                        transform:
+                            rotate(var(--angle))
+                            translateY(-22px)
+                            scale(.65);
+                    }
+
+                    20% {
+                        opacity: .28;
+                        transform:
+                            rotate(var(--angle))
+                            translateY(-22px)
+                            scale(.75);
+                    }
+
+                    45% {
+                        opacity: .55;
+                        transform:
+                            rotate(var(--angle))
+                            translateY(-22px)
+                            scale(.9);
+                    }
+
+                    65% {
+                        opacity: 1;
+                        transform:
+                            rotate(var(--angle))
+                            translateY(-22px)
+                            scale(1.25);
+                    }
+
+                    100% {
+                        opacity: .12;
+                        transform:
+                            rotate(var(--angle))
+                            translateY(-22px)
+                            scale(.65);
+                    }
+                }
+
+                .dotm-loader {
+                    position: relative !important;
+                    width: 52px !important;
+                    height: 52px !important;
+                    display: block !important;
+                }
+
+                .dotm-dot {
+                    transform-origin: center center;
+                    will-change: transform, opacity;
+                }
+            `;
+
+            document.head.appendChild(style);
+        }
+    }
+
+    /* =====================================================
+       MAINTENANCE LOCK
+       ===================================================== */
+
+    function enableMaintenanceMode() {
+        if (!maintenanceOverlay) return;
+
+        maintenanceOverlay.hidden = false;
+
+        maintenanceOverlay.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        html.classList.add("maintenance-active");
+        body.classList.add("maintenance-active");
+
+        html.style.overflow = "hidden";
+        body.style.overflow = "hidden";
+
+        /*
+         * Stop interaction with everything underneath.
+         */
+        const blockEvent = (event) => {
+            if (!maintenanceOverlay.contains(event.target)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        };
+
+        [
+            "click",
+            "dblclick",
+            "mousedown",
+            "mouseup",
+            "pointerdown",
+            "pointerup",
+            "pointermove",
+            "touchstart",
+            "touchmove",
+            "touchend",
+            "dragstart",
+            "dragover",
+            "drop",
+            "contextmenu"
+        ].forEach((eventName) => {
+            document.addEventListener(
+                eventName,
+                blockEvent,
+                true
+            );
+        });
+
+        /*
+         * Prevent scrolling.
+         */
+        document.addEventListener(
+            "wheel",
+            (event) => {
+                event.preventDefault();
+            },
+            {
+                passive: false,
+                capture: true
+            }
+        );
+
+        document.addEventListener(
+            "touchmove",
+            (event) => {
+                event.preventDefault();
+            },
+            {
+                passive: false,
+                capture: true
+            }
+        );
+
+        /*
+         * Lock keyboard interaction.
+         */
+        document.addEventListener(
+            "keydown",
+            (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+            },
+            true
+        );
+    }
+
+    /* =====================================================
+       INITIALIZE
+       ===================================================== */
+
+    createDotmLoader();
+
+    if (MAINTENANCE_MODE) {
+        enableMaintenanceMode();
+    }
+
+    /* =====================================================
+       MOBILE MENU
+       ===================================================== */
+
+    const menuToggle =
+        document.querySelector(".menu-toggle");
+
+    const mobileMenu =
+        document.querySelector(".mobile-menu");
+
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener("click", () => {
+            const open =
+                mobileMenu.classList.toggle("active");
+
+            menuToggle.classList.toggle(
+                "active",
+                open
+            );
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                String(open)
+            );
+        });
+
+        mobileMenu
+            .querySelectorAll("a")
+            .forEach((link) => {
+                link.addEventListener("click", () => {
+                    mobileMenu.classList.remove(
+                        "active"
+                    );
+
+                    menuToggle.classList.remove(
+                        "active"
+                    );
+
+                    menuToggle.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+                });
+            });
+    }
+
+    /* =====================================================
+       FILE INPUT
+       ===================================================== */
+
+    const fileInput =
+        document.getElementById("fileInput");
+
+    const dropzone =
+        document.getElementById("dropzone");
+
+    const fileCard =
+        document.getElementById("fileCard");
+
+    const fileName =
+        document.getElementById("fileName");
+
+    const fileSize =
+        document.getElementById("fileSize");
+
+    const detectedType =
+        document.getElementById("detectedType");
+
+    const targetVersion =
+        document.getElementById("targetVersion");
+
+    const convertButton =
+        document.getElementById("convertButton");
+
+    const converterStatus =
+        document.getElementById("converterStatus");
+
+    let selectedFile = null;
+    let selectedType = null;
+
+    /* =====================================================
+       DETECT FILE TYPE
+       ===================================================== */
+
+    function detectFileType(file) {
+        if (!file || !file.name) {
+            return null;
+        }
+
+        const extension =
+            file.name
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+        if (extension === "aep") {
+            return "AEP";
+        }
+
+        if (extension === "aex") {
+            return "AEX";
+        }
+
+        return null;
+    }
+
+    /* =====================================================
+       FORMAT FILE SIZE
+       ===================================================== */
+
+    function formatFileSize(bytes) {
+        if (!Number.isFinite(bytes)) {
+            return "0 KB";
+        }
+
+        if (bytes < 1024) {
+            return `${bytes} B`;
+        }
+
+        if (bytes < 1024 * 1024) {
+            return `${(bytes / 1024).toFixed(1)} KB`;
+        }
+
+        if (bytes < 1024 * 1024 * 1024) {
+            return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+        }
+
+        return `${(
+            bytes /
+            (1024 * 1024 * 1024)
+        ).toFixed(2)} GB`;
+    }
+
+    /* =====================================================
+       DISPLAY FILE
+       ===================================================== */
+
+    function displayFile(file) {
+        if (!file) return;
+
+        const type =
+            detectFileType(file);
+
+        if (!type) {
+            selectedFile = null;
+            selectedType = null;
+
+            if (fileCard) {
+                fileCard.classList.remove(
+                    "visible"
+                );
+            }
+
+            if (converterStatus) {
+                converterStatus.textContent =
+                    "Only .AEP and .AEX files are supported.";
+            }
+
+            if (convertButton) {
+                convertButton.disabled = true;
+            }
+
+            return;
+        }
+
+        selectedFile = file;
+        selectedType = type;
+
+        if (fileName) {
+            fileName.textContent =
+                file.name;
+        }
+
+        if (fileSize) {
+            fileSize.textContent =
+                formatFileSize(file.size);
+        }
+
+        if (detectedType) {
+            detectedType.textContent =
+                type;
+        }
+
+        if (fileCard) {
+            fileCard.classList.add(
+                "visible"
+            );
+        }
+
+        if (convertButton) {
+            convertButton.disabled = false;
+        }
+
+        if (converterStatus) {
+            converterStatus.textContent =
+                `${type} file detected successfully.`;
+        }
+    }
+
+    /* =====================================================
+       FILE INPUT CHANGE
+       ===================================================== */
+
+    if (fileInput) {
+        fileInput.addEventListener(
+            "change",
+            (event) => {
+                const file =
+                    event.target.files?.[0];
+
+                if (file) {
+                    displayFile(file);
+                }
+            }
+        );
+    }
+
+    /* =====================================================
+       DRAG & DROP
+       ===================================================== */
+
+    if (dropzone) {
+        [
+            "dragenter",
+            "dragover"
+        ].forEach((eventName) => {
+            dropzone.addEventListener(
+                eventName,
+                (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    dropzone.classList.add(
+                        "dragging"
+                    );
+                }
+            );
+        });
+
+        [
+            "dragleave",
+            "drop"
+        ].forEach((eventName) => {
+            dropzone.addEventListener(
+                eventName,
+                (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    dropzone.classList.remove(
+                        "dragging"
+                    );
+                }
+            );
+        });
+
+        dropzone.addEventListener(
+            "drop",
+            (event) => {
+                const file =
+                    event.dataTransfer
+                        ?.files?.[0];
+
+                if (file) {
+                    displayFile(file);
+                }
+            }
+        );
+    }
+
+    /* =====================================================
+       CONVERT
+       ===================================================== */
+
+    if (convertButton) {
+        convertButton.addEventListener(
+            "click",
+            () => {
+                if (
+                    !selectedFile ||
+                    !selectedType
+                ) {
+                    return;
+                }
+
+                const version =
+                    targetVersion?.value ||
+                    "Previous Version";
+
+                if (converterStatus) {
+                    converterStatus.textContent =
+                        `${selectedType} selected · target After Effects ${version}`;
+                }
+            }
+        );
+    }
+
+    /* =====================================================
+       SMOOTH LINKS
+       ===================================================== */
+
+    document
+        .querySelectorAll('a[href^="#"]')
+        .forEach((link) => {
+            link.addEventListener(
+                "click",
+                (event) => {
+                    const id =
+                        link.getAttribute(
+                            "href"
+                        );
+
+                    if (
+                        !id ||
+                        id === "#"
+                    ) {
+                        return;
+                    }
+
+                    const target =
+                        document.querySelector(
+                            id
+                        );
+
+                    if (!target) {
+                        return;
+                    }
+
+                    event.preventDefault();
+
+                    target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+                }
+            );
+        });
+
+    /* =====================================================
+       CURRENT YEAR
+       ===================================================== */
+
+    document
+        .querySelectorAll("[data-year]")
+        .forEach((element) => {
+            element.textContent =
+                new Date().getFullYear();
+        });
+});            dot.setAttribute("aria-hidden", "true");
 
             const angle = i * rotationStep;
             const delay = -(animationDuration / dotCount) * i;
